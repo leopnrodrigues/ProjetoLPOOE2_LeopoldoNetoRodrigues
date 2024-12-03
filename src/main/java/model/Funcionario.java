@@ -36,5 +36,8 @@ public class Funcionario extends Pessoa {
         this.cabine = cabine;
     }
     
-    
+    @Override
+    public String toString(){
+        return this.getNome() + " | " + this.getTurno() + " | Cabine " + this.getCabine();
+    }
 }

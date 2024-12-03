@@ -99,5 +99,8 @@ public class Veiculo implements Serializable {
         passagem.setVeiculo(this);
     }
 
+    public String toString(){
+       return this.getPlaca() + " | " + this.getMarca() + " | " +  this.getDescricao() + " | " + this.getCor();
+    }
     
 }
