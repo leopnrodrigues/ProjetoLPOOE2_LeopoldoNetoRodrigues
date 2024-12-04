@@ -76,6 +76,12 @@ public class TelaCadVei extends javax.swing.JDialog {
 
         jLabel6.setText("Marca");
 
+        cmbMarca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbMarcaActionPerformed(evt);
+            }
+        });
+
         jLabel7.setText("Descrição");
 
         txtDescricao.addActionListener(new java.awt.event.ActionListener() {
@@ -172,6 +178,10 @@ public class TelaCadVei extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDescricaoActionPerformed
 
+    private void cmbMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbMarcaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbMarcaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -229,14 +239,12 @@ public class TelaCadVei extends javax.swing.JDialog {
     }
 
     public void loadMarcas() {
-        jpa.conexaoAberta();
+        cmbMarca.removeAllItems();  // Limpa o combo box de marcas
 
-        cmbTipoVeiculo.removeAllItems();
-        for (Tipo tipo : Tipo.values()) {
-            cmbTipoVeiculo.addItem(tipo);
+        // Adiciona as marcas no combo box
+        for (Marca marca : Marca.values()) {
+            cmbMarca.addItem(marca);  // Adiciona cada marca ao combo box
         }
-
-        jpa.fecharConexao();
     }
 
     
@@ -247,7 +255,8 @@ public class TelaCadVei extends javax.swing.JDialog {
             veiculoBase.setPlaca(txtPlaca.getText());
             veiculoBase.setCor(txtCor.getText());
             veiculoBase.setTipo((Tipo) cmbTipoVeiculo.getSelectedItem());
-
+            veiculoBase.setMarca((Marca) cmbMarca.getSelectedItem());
+            veiculoBase.setDescricao(txtDescricao.getText());
             jpa.conexaoAberta();
             jpa.persist(veiculoBase);
             jpa.fecharConexao();
@@ -257,6 +266,7 @@ public class TelaCadVei extends javax.swing.JDialog {
             return veiculoBase;
         }
     }
+
 
 
 

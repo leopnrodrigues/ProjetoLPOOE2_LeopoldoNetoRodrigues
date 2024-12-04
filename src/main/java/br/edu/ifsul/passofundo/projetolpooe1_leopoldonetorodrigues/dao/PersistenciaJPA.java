@@ -210,6 +210,21 @@ public class PersistenciaJPA implements InterfaceBD{
 
     }
     
+    public Veiculo getVeiculoByPlaca(String placa) {
+        Veiculo veiculo = null;
+        try {
+            // Assume que você tenha uma busca baseada na placa
+            veiculo = entity.createQuery("SELECT v FROM Veiculo v WHERE v.placa = :placa", Veiculo.class)
+                         .setParameter("placa", placa)
+                         .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Tratamento de exceção, caso o veículo não seja encontrado
+        }
+    return veiculo;
+}
+
+    
     public List<Passagem> getMovimentacoes() {
         entity = getEntityManager();
 

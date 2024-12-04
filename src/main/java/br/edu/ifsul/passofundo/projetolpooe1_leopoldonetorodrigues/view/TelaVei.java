@@ -149,19 +149,19 @@ public class TelaVei extends javax.swing.JFrame {
         TelaCadVei tela = new TelaCadVei(this, rootPaneCheckingEnabled);
         tela.setVisible(true);
 
-//        loadVeiculosCadastrados();
+        loadVeiculosCadastrados();
     }//GEN-LAST:event_btnAddVeiculoActionPerformed
 
     private void btnEditarVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarVeiculoActionPerformed
 
-//        Veiculo veiculoSel = getVeiculoSelecionado();
-//        if (veiculoSel != null) {
+        Veiculo veiculoSel = getVeiculoSelecionado();
+        if (veiculoSel != null) {
             TelaCadVei tela = new TelaCadVei(this, rootPaneCheckingEnabled);
-//            tela.setVeiculo(veiculoSel);
+            tela.setVeiculo(veiculoSel);
             tela.setVisible(true);
-//            loadVeiculosCadastrados(); // Atualiza a tabela após edição
+            loadVeiculosCadastrados(); // Atualiza a tabela após edição
 
-//        }
+        }
     }//GEN-LAST:event_btnEditarVeiculoActionPerformed
 
     private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
@@ -207,14 +207,7 @@ public class TelaVei extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRemoverActionPerformed
 
     private void txtPlacaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyReleased
-//        if (txtPlaca.getText().trim().isEmpty()) {
-//            loadVeiculosCadastrados();
-//        } else {
-//            jpa.conexaoAberta();
-//            loadVeiculosCadastrados(jpa.getVeiculos(txtPlaca.getText().trim()));
-//
-//            jpa.fecharConexao();
-//        }
+        
     }//GEN-LAST:event_txtPlacaKeyReleased
 
     /**
@@ -258,6 +251,58 @@ public class TelaVei extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void loadVeiculosCadastrados() {
+    // Abre a conexão
+    jpa.conexaoAberta();
+    try {
+        // Busca os veículos cadastrados
+        List<Veiculo> listaVeiculos = jpa.getVeiculos(); // Método criado no DAO
+
+        // Obtém o modelo da tabela
+        DefaultTableModel modeloTabela = (DefaultTableModel) tblVeiculos.getModel();
+
+        // Limpa a tabela
+        modeloTabela.setRowCount(0);
+
+        // Adiciona os veículos ao modelo da tabela
+        for (Veiculo veiculo : listaVeiculos) {
+            Object[] linha = {
+                veiculo.getPlaca(),
+                veiculo.getTipo(),
+                veiculo.getMarca(),
+                veiculo.getDescricao(),
+                veiculo.getCor()
+            };
+            modeloTabela.addRow(linha);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Erro ao carregar os veículos: " + e.getMessage());
+    } finally {
+        // Fecha a conexão
+        jpa.fecharConexao();
+    }
+}
+
+
+public Veiculo getVeiculoSelecionado() {
+    int linhaSelecionada = tblVeiculos.getSelectedRow(); // Obtém a linha selecionada
+    if (linhaSelecionada >= 0) { // Quando não tem nenhum objeto selecionado retorna -1
+        DefaultTableModel modeloTabela = (DefaultTableModel) tblVeiculos.getModel();
+        // O Veiculo está na primeira coluna (índice 0) da tabela
+        String placaSelecionada = (String) modeloTabela.getValueAt(linhaSelecionada, 0); // Recupera a placa
+        // Realiza a busca pelo veículo, com base na placa (ou outros atributos, dependendo da necessidade)
+        Veiculo veiculoSelecionado = jpa.getVeiculoByPlaca(placaSelecionada); // Método no DAO que busca o veículo pela placa
+        
+        return veiculoSelecionado;
+    } else {
+        JOptionPane.showMessageDialog(this, "Nenhuma linha selecionada.");
+        return null;
+    }
+}
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddVeiculo;
