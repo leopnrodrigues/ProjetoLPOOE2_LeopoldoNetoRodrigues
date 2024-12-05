@@ -100,7 +100,7 @@ public class Veiculo implements Serializable {
     }
 
     public String toString(){
-       return this.getPlaca() + " | " + this.getMarca() + " | " +  this.getDescricao() + " | " + this.getCor();
+       return this.getPlaca();
     }
     
 }

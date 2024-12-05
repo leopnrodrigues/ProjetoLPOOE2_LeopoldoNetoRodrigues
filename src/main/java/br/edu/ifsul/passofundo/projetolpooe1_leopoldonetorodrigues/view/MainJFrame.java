@@ -4,6 +4,11 @@
  */
 package br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.view;
 
+import br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.dao.PersistenciaJPA;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import model.Passagem;
+
 /**
  *
  * @author leo
@@ -15,6 +20,7 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     public MainJFrame() {
         initComponents();
+        carregarHistorico();
     }
 
     /**
@@ -27,6 +33,9 @@ public class MainJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         MenuCad = new javax.swing.JMenu();
         ItemFunc = new javax.swing.JMenuItem();
@@ -40,6 +49,21 @@ public class MainJFrame extends javax.swing.JFrame {
         jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Motorista", "Veículo", "Data"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel1.setText("Histórico");
 
         MenuCad.setText("Cadastros");
 
@@ -99,11 +123,23 @@ public class MainJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 666, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 359, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(7, 7, 7)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -115,7 +151,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuSobreActionPerformed
 
     private void MenuPedagioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuPedagioActionPerformed
-        TelaPedagio telaPedagio = new TelaPedagio();
+        TelaPedagio telaPedagio = new TelaPedagio(this, rootPaneCheckingEnabled);
         telaPedagio.setVisible(true);
     }//GEN-LAST:event_MenuPedagioActionPerformed
 
@@ -168,6 +204,29 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void carregarHistorico() {
+        PersistenciaJPA jpa = new PersistenciaJPA(); // Criação da instância do JPA
+        List<Passagem> movimentacoes = jpa.getMovimentacoes(); // Recupera as passagens do banco de dados
+
+        // Cria o modelo da tabela com as colunas apropriadas
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][]{}, // Inicializa a tabela sem dados
+            new String[]{"Motorista", "Veículo", "Data"} // Definição das colunas
+        );
+
+        // Preenche a tabela com os dados das passagens
+        for (Passagem passagem : movimentacoes) {
+            Object[] row = new Object[3];
+            row[0] = passagem.getMotorista().getNome(); // Nome do motorista
+            row[1] = passagem.getVeiculo().getPlaca(); // Modelo do veículo
+            row[2] = passagem.getDataHora().toString(); // Data e hora da passagem
+            model.addRow(row); // Adiciona a linha na tabela
+        }
+
+        // Define o modelo para a tabela
+        jTable1.setModel(model);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem ItemFunc;
@@ -176,9 +235,12 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenu MenuCad;
     private javax.swing.JMenuItem MenuPedagio;
     private javax.swing.JMenuItem MenuSobre;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

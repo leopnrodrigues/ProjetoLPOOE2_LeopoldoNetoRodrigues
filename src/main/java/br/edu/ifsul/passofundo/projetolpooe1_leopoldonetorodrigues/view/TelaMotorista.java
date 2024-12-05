@@ -5,6 +5,7 @@
 package br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.view;
 
 import br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.dao.PersistenciaJPA;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import model.Motorista;
@@ -22,6 +23,7 @@ public class TelaMotorista extends javax.swing.JFrame {
     public TelaMotorista() {
         initComponents();
         jpa = new PersistenciaJPA();
+        carregarPessoasCadastradas();
         
     }
 
@@ -210,10 +212,9 @@ public class TelaMotorista extends javax.swing.JFrame {
         Motorista pessoaSel = lstPessoas.getSelectedValue();
         if (pessoaSel != null) {
             TelaCadMotorista telaEdt = new TelaCadMotorista(this, rootPaneCheckingEnabled);
-            //            telaEdt.setPessoa(pessoaSel);
+                        telaEdt.setMot(pessoaSel);
             telaEdt.setVisible(true);
-
-            //            carregarPessoasCadastradas();
+                        carregarPessoasCadastradas();
 
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma pessoa para Editar");
@@ -225,17 +226,17 @@ public class TelaMotorista extends javax.swing.JFrame {
         = new TelaCadMotorista(this, rootPaneCheckingEnabled);
         telaCadastro.setVisible(true);
 
-        //        carregarPessoasCadastradas();
+                carregarPessoasCadastradas();
     }//GEN-LAST:event_btnNovaPessoaActionPerformed
 
     private void txtBuscaNomeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscaNomeKeyReleased
         if(txtBuscaNome.getText().trim().isEmpty()){
-            //            carregarPessoasCadastradas();
+                        carregarPessoasCadastradas();
         } else{
             jpa.conexaoAberta();
             DefaultListModel modeloLista = new DefaultListModel();
-            //            modeloLista.addAll(jpa.getPessoas(txtBuscaNome.getText().trim()));
-            //            System.out.println("Pessoas carregadas: "+jpa.getPessoas(txtBuscaNome.getText().trim()));
+                        modeloLista.addAll(jpa.getMotoristas(txtBuscaNome.getText().trim()));
+                        System.out.println("Pessoas carregadas: "+jpa.getMotoristas(txtBuscaNome.getText().trim()));
             lstPessoas.setModel(modeloLista);
 
             jpa.fecharConexao();
@@ -281,6 +282,18 @@ public class TelaMotorista extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void carregarPessoasCadastradas() {
+        jpa.conexaoAberta();
+
+        DefaultListModel modeloLista = new DefaultListModel();
+        modeloLista.addAll(jpa.getMotoristas());
+        lstPessoas.setModel(modeloLista);
+
+        jpa.fecharConexao();
+
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel areaBotoes;

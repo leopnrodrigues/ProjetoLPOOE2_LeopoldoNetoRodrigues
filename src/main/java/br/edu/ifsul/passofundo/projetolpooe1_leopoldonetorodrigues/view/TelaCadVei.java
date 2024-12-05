@@ -152,22 +152,14 @@ public class TelaCadVei extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-
         try {
-            // Inicializa veículo ou veículo oficial com os dados comuns
-            Veiculo veiculoBase = createVeiculoBase();
-
-            jpa.conexaoAberta();
-
-            jpa.persist(veiculoBase);
-
+            createVeiculoBase();
         } catch (Exception ex) {
             Logger.getLogger(TelaCadVei.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             jpa.fecharConexao();
             dispose();
         }
-
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -249,22 +241,25 @@ public class TelaCadVei extends javax.swing.JDialog {
 
     
     private Veiculo createVeiculoBase() throws Exception {
-        // Inicializa o veículo base com dados comuns
         Veiculo veiculoBase = (veiculo == null) ? new Veiculo() : veiculo;
+
+        veiculoBase.setPlaca(txtPlaca.getText());
+        veiculoBase.setCor(txtCor.getText());
+        veiculoBase.setTipo((Tipo) cmbTipoVeiculo.getSelectedItem());
+        veiculoBase.setMarca((Marca) cmbMarca.getSelectedItem());
+        veiculoBase.setDescricao(txtDescricao.getText());
+
         try {
-            veiculoBase.setPlaca(txtPlaca.getText());
-            veiculoBase.setCor(txtCor.getText());
-            veiculoBase.setTipo((Tipo) cmbTipoVeiculo.getSelectedItem());
-            veiculoBase.setMarca((Marca) cmbMarca.getSelectedItem());
-            veiculoBase.setDescricao(txtDescricao.getText());
             jpa.conexaoAberta();
             jpa.persist(veiculoBase);
-            jpa.fecharConexao();
         } catch (Exception e) {
             Logger.getLogger(TelaCadVei.class.getName()).log(Level.SEVERE, null, e);
+            throw e; // Propague a exceção para tratamento adequado
         } finally {
-            return veiculoBase;
+            jpa.fecharConexao();
         }
+
+        return veiculoBase;
     }
 
 

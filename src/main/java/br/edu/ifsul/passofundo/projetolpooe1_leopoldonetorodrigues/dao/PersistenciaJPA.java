@@ -14,6 +14,7 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import model.Funcionario;
 import model.Marca;
+import model.Motorista;
 import model.Passagem;
 import model.Pessoa;
 import model.Tipo;
@@ -136,7 +137,33 @@ public class PersistenciaJPA implements InterfaceBD{
         }
 
     }
-     
+
+    public List<Motorista> getMotoristas() {
+        entity = getEntityManager(); 
+        try {
+            TypedQuery<Motorista> query = entity.createQuery("SELECT m FROM Motorista m", Motorista.class);
+            return query.getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar motoristas: " + e.getMessage());
+        } finally {
+            fecharConexao();
+        }
+    }
+
+    public List<Motorista> getMotoristas(String nome) {
+        entity = getEntityManager();
+        try {
+            TypedQuery<Motorista> query = entity.createQuery("SELECT m FROM Motorista m WHERE m.nome LIKE :nome", Motorista.class);
+            query.setParameter("nome", "%" + nome + "%");
+
+            return query.getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar motoristas por nome: " + e.getMessage());
+        } finally {
+            fecharConexao();
+        }
+    }
+
     public List<Veiculo> getVeiculos() {
         EntityManager em = getEntityManager();
         try {
@@ -162,26 +189,12 @@ public class PersistenciaJPA implements InterfaceBD{
         }
     }
     
-    public Veiculo findVeiculoByPlaca(String placa) {
-        EntityManager em = getEntityManager();
-        Veiculo veiculo = null;
-
-        try {
-            em.getTransaction().begin();
-            veiculo = em.createQuery("SELECT v FROM Veiculo v WHERE upper(v.placa) = :placa", Veiculo.class)
-                    .setParameter("placa", placa.toUpperCase())
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            System.out.println("Nenhum veículo encontrado com a placa: " + placa);
-        } catch (Exception e) {
-            Logger.getLogger(PersistenciaJPA.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            em.close();
-        }
-
-        return veiculo;
+    public List<Veiculo> getVeiculosByPlaca(String placa) {
+        return entity.createQuery("SELECT v FROM Veiculo v WHERE v.placa LIKE :placa", Veiculo.class)
+                 .setParameter("placa", "%" + placa + "%")
+                 .getResultList();
     }
-    
+
     public List<Marca> getModelos() {
         entity = getEntityManager();
 
@@ -196,33 +209,24 @@ public class PersistenciaJPA implements InterfaceBD{
 
     }
     
-    public List<Tipo> getTipos() {
-        entity = getEntityManager();
 
-        try {
-            TypedQuery<Tipo> query
-                    = entity.createQuery("Select p from Tipo p", Tipo.class);
-            return query.getResultList();
-        } catch (Exception e) {
-            System.err.println("Erro ao buscar: " + e);
-            return null;
-        }
-
-    }
-    
     public Veiculo getVeiculoByPlaca(String placa) {
-        Veiculo veiculo = null;
+        entity = getEntityManager();
         try {
-            // Assume que você tenha uma busca baseada na placa
-            veiculo = entity.createQuery("SELECT v FROM Veiculo v WHERE v.placa = :placa", Veiculo.class)
-                         .setParameter("placa", placa)
-                         .getSingleResult();
+            TypedQuery<Veiculo> query = entity.createQuery(
+                "SELECT v FROM Veiculo v WHERE v.placa = :placa", Veiculo.class
+            );
+            query.setParameter("placa", placa);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            System.err.println("Nenhum veículo encontrado com a placa: " + placa);
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
-            // Tratamento de exceção, caso o veículo não seja encontrado
+            throw new RuntimeException("Erro ao buscar veículo por placa: " + e.getMessage());
         }
-    return veiculo;
 }
+
 
     
     public List<Passagem> getMovimentacoes() {
@@ -230,7 +234,7 @@ public class PersistenciaJPA implements InterfaceBD{
 
         try {
             TypedQuery<Passagem> query
-                    = entity.createQuery("Select p from Pasagem p", Passagem.class);
+                    = entity.createQuery("Select p from Passagem p", Passagem.class);
             return query.getResultList();
         } catch (Exception e) {
             System.err.println("Erro ao buscar registros: " + e);
@@ -238,4 +242,6 @@ public class PersistenciaJPA implements InterfaceBD{
         }
 
     }
+    
+
 }

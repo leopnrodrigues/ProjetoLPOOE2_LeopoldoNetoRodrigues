@@ -5,6 +5,7 @@
 package br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.view;
 
 import br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.dao.PersistenciaJPA;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import model.Funcionario;
@@ -21,8 +22,11 @@ public class TelaFunc extends javax.swing.JFrame {
      * Creates new form TelaFunc
      */
     public TelaFunc() {
+        
         initComponents();
         jpa = new PersistenciaJPA();
+        carregarTurnos();
+        carregarPessoasCadastradas();
         
     }
 
@@ -272,15 +276,17 @@ public class TelaFunc extends javax.swing.JFrame {
     private void cmbTurnoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTurnoItemStateChanged
         Turno turnoSel = (Turno) cmbTurno.getSelectedItem();
         if (turnoSel == null) {
-            carregarPessoasCadastradas();
+            carregarPessoasCadastradas(); // Se nenhum turno foi selecionado, lista tudo
         } else {
-            jpa.conexaoAberta();
-
-            DefaultListModel modeloLista = new DefaultListModel();
-            modeloLista.addAll(jpa.getFunc(turnoSel));
-            lstPessoas.setModel(modeloLista);
-
-            jpa.fecharConexao();
+            try {
+                jpa.conexaoAberta();
+                DefaultListModel modeloLista = new DefaultListModel();
+                modeloLista.addAll(jpa.getFunc(turnoSel)); // Método que busca pessoas do turno
+                lstPessoas.setModel(modeloLista);
+                jpa.fecharConexao();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erro ao buscar pessoas por turno: " + e.getMessage());
+            }
         }
     }//GEN-LAST:event_cmbTurnoItemStateChanged
 
@@ -333,7 +339,20 @@ public class TelaFunc extends javax.swing.JFrame {
         jpa.fecharConexao();
 
     }
+    
+    public void carregarTurnos() {
+        cmbTurno.removeAllItems(); // Limpa o combo
+        cmbTurno.addItem(null); // Adiciona uma opção "Nenhum" ou "Todos"
+        try {
+            for (Turno t : Turno.values()) {
+            cmbTurno.addItem(t); // Adiciona cada turno do enum ao combo
+        }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar turnos: " + e.getMessage());
+        }
+    }
 
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel areaBotoes;
     private javax.swing.JPanel areaFiltros;

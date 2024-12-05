@@ -7,6 +7,8 @@ package br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.view;
 import br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.dao.PersistenciaJPA;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,6 +29,7 @@ public class TelaVei extends javax.swing.JFrame {
      */
     public TelaVei() {
         initComponents();
+        loadVeiculosCadastrados();
     }
 
     /**
@@ -95,6 +98,11 @@ public class TelaVei extends javax.swing.JFrame {
 
         jLabel2.setText("Placa:");
 
+        txtPlaca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPlacaActionPerformed(evt);
+            }
+        });
         txtPlaca.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtPlacaKeyReleased(evt);
@@ -157,58 +165,73 @@ public class TelaVei extends javax.swing.JFrame {
         Veiculo veiculoSel = getVeiculoSelecionado();
         if (veiculoSel != null) {
             TelaCadVei tela = new TelaCadVei(this, rootPaneCheckingEnabled);
-            tela.setVeiculo(veiculoSel);
+            tela.setVeiculo(veiculoSel); 
             tela.setVisible(true);
-            loadVeiculosCadastrados(); // Atualiza a tabela após edição
-
+            loadVeiculosCadastrados(); 
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um veículo para editar.");
         }
     }//GEN-LAST:event_btnEditarVeiculoActionPerformed
 
     private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
-//        Veiculo veiculoSel = getVeiculoSelecionado();
-//        if (veiculoSel != null) {
-//            int delOp = JOptionPane.showConfirmDialog(rootPane, "Tem certeza que deseja remover veículo " + veiculoSel + "?");
-//            if (delOp == JOptionPane.YES_OPTION) {
-//                jpa.conexaoAberta();
-//                try {
-//
-//                    // Passo 1: Desvincular relacionamentos e salvar as alterações
-//                    if (veiculoSel.getProprietario() != null || veiculoSel.getModelo() != null) {
-//                        veiculoSel.setProprietario(null);
-//                        veiculoSel.setModelo(null);
-//
-//                        /*
-//                        Após setar os relacionamentos para null, o estado do objeto pode ter sido alterado,
-//                        e ele não está mais sendo tratado como parte do contexto de persistência (EntityManager).
-//                        Isso ocorre porque as modificações não foram sincronizadas com o banco antes da tentativa de remoção.
-//
-//                        Ao modificar os relacionamentos (setar para null), essas alterações precisam ser sincronizadas com o banco antes de tentar a remoção
-//                        */
-//                        jpa.persist(veiculoSel);
-//                        jpa.fecharConexao();
-//
-//                        jpa.conexaoAberta();
-//                    }
-//
-//                    // Passo 2: Remover o objeto
-//                    jpa.remover(veiculoSel);
-//                    JOptionPane.showMessageDialog(rootPane, "Veículo removido com sucesso!");
-//
-//                    loadVeiculosCadastrados(); // Atualiza a tabela
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    System.err.println("Erro ao remover veículo " + veiculoSel + "\nErro: " + e.getMessage());
-//                } finally {
-//                    jpa.fecharConexao();
-//                }
-//
-//            }
-//        }
+        Veiculo veiculoSel = getVeiculoSelecionado(); // Obter o veículo selecionado
+        if (veiculoSel != null) { // Se um veículo foi selecionado
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Tem certeza que deseja remover o veículo com placa " + veiculoSel.getPlaca() + "?",
+                "Confirmar Remoção",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) { // Se o usuário confirmou a remoção
+                try {
+                    jpa.conexaoAberta(); // Abre a conexão
+                    jpa.remover(veiculoSel); // Remove o veículo do banco
+                    jpa.fecharConexao(); // Fecha a conexão
+                    JOptionPane.showMessageDialog(this, "Veículo removido com sucesso!");
+                    loadVeiculosCadastrados(); // Atualiza a tabela
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Erro ao remover veículo: " + e.getMessage());
+                    e.printStackTrace();
+                } finally {
+                    jpa.fecharConexao(); // Garante que a conexão será fechada
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um veículo para remover.");
+        }
     }//GEN-LAST:event_btnRemoverActionPerformed
 
     private void txtPlacaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyReleased
-        
+        String texto = txtPlaca.getText().toLowerCase();
+        if (!texto.isEmpty()) {  
+            try {
+                List<Veiculo> resultados = jpa.getVeiculosByPlaca(texto);
+                DefaultTableModel model = (DefaultTableModel) tblVeiculos.getModel();  
+                model.setRowCount(0);  
+
+               
+                for (Veiculo veiculo : resultados) {
+                    model.addRow(new Object[]{
+                        veiculo.getPlaca(),
+                        veiculo.getCor(),
+                        veiculo.getTipo(),
+                        veiculo.getMarca(),
+                        veiculo.getDescricao(),
+                    });
+                }
+            } catch (Exception e) {
+                Logger.getLogger(TelaVei.class.getName()).log(Level.SEVERE, null, e);
+            }
+        } else {
+            // Se o campo estiver vazio, você pode limpar a tabela ou mostrar todos os veículos
+            loadVeiculosCadastrados();
+        }
     }//GEN-LAST:event_txtPlacaKeyReleased
+
+    private void txtPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPlacaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPlacaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -253,55 +276,60 @@ public class TelaVei extends javax.swing.JFrame {
     }
     
     public void loadVeiculosCadastrados() {
-    // Abre a conexão
-    jpa.conexaoAberta();
-    try {
-        // Busca os veículos cadastrados
-        List<Veiculo> listaVeiculos = jpa.getVeiculos(); // Método criado no DAO
+        jpa.conexaoAberta();
+        try {
+            List<Veiculo> listaVeiculos = jpa.getVeiculos(); 
 
-        // Obtém o modelo da tabela
-        DefaultTableModel modeloTabela = (DefaultTableModel) tblVeiculos.getModel();
+            DefaultTableModel modeloTabela = (DefaultTableModel) tblVeiculos.getModel();
 
-        // Limpa a tabela
-        modeloTabela.setRowCount(0);
+            modeloTabela.setRowCount(0);
 
-        // Adiciona os veículos ao modelo da tabela
-        for (Veiculo veiculo : listaVeiculos) {
-            Object[] linha = {
-                veiculo.getPlaca(),
-                veiculo.getTipo(),
-                veiculo.getMarca(),
-                veiculo.getDescricao(),
-                veiculo.getCor()
-            };
-            modeloTabela.addRow(linha);
+            for (Veiculo veiculo : listaVeiculos) {
+                Object[] linha = {
+                    veiculo.getPlaca(),
+                    veiculo.getTipo(),
+                    veiculo.getMarca(),
+                    veiculo.getDescricao(),
+                    veiculo.getCor()
+                };
+                modeloTabela.addRow(linha);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao carregar os veículos: " + e.getMessage());
+        } finally {
+            jpa.fecharConexao();
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Erro ao carregar os veículos: " + e.getMessage());
-    } finally {
-        // Fecha a conexão
-        jpa.fecharConexao();
-    }
 }
 
+    public Veiculo getVeiculoSelecionado() {
+        int linhaSelecionada = tblVeiculos.getSelectedRow(); // Obtém a linha selecionada
+        if (linhaSelecionada >= 0) {
+            DefaultTableModel modeloTabela = (DefaultTableModel) tblVeiculos.getModel();
 
-public Veiculo getVeiculoSelecionado() {
-    int linhaSelecionada = tblVeiculos.getSelectedRow(); // Obtém a linha selecionada
-    if (linhaSelecionada >= 0) { // Quando não tem nenhum objeto selecionado retorna -1
-        DefaultTableModel modeloTabela = (DefaultTableModel) tblVeiculos.getModel();
-        // O Veiculo está na primeira coluna (índice 0) da tabela
-        String placaSelecionada = (String) modeloTabela.getValueAt(linhaSelecionada, 0); // Recupera a placa
-        // Realiza a busca pelo veículo, com base na placa (ou outros atributos, dependendo da necessidade)
-        Veiculo veiculoSelecionado = jpa.getVeiculoByPlaca(placaSelecionada); // Método no DAO que busca o veículo pela placa
-        
-        return veiculoSelecionado;
-    } else {
-        JOptionPane.showMessageDialog(this, "Nenhuma linha selecionada.");
-        return null;
+            // Recupera a placa da coluna 0
+            String placaSelecionada = (String) modeloTabela.getValueAt(linhaSelecionada, 0);
+
+            try {
+                // Busca o veículo no banco usando a placa
+                Veiculo veiculoSelecionado = jpa.getVeiculoByPlaca(placaSelecionada);
+                if (veiculoSelecionado == null) {
+                    JOptionPane.showMessageDialog(this, "Veículo não encontrado no banco de dados.");
+                }
+                return veiculoSelecionado;
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erro ao buscar o veículo: " + e.getMessage());
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhuma linha selecionada.");
+            return null;
+        }
     }
-}
+
+
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

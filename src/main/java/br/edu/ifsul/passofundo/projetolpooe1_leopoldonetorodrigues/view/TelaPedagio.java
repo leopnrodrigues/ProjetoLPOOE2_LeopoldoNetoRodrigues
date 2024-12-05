@@ -1,20 +1,35 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.view;
 
-/**
- *
- * @author leo
- */
-public class TelaPedagio extends javax.swing.JFrame {
+import br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.dao.PersistenciaJPA;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import model.Funcionario;
+import model.Motorista;
+import model.Passagem;
+import model.Turno;
+import model.Veiculo;
 
+public class TelaPedagio extends javax.swing.JDialog {
+
+    private Passagem passagem;
+    PersistenciaJPA jpa;
+    
     /**
-     * Creates new form TelaFunc
+     * Creates new form TelaCadastroPessoa
      */
-    public TelaPedagio() {
+    public TelaPedagio(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
+        jpa = new PersistenciaJPA();
+        carregarDados();
+        txtDate.setText(LocalDateTime.now().toString());
     }
 
     /**
@@ -26,21 +41,191 @@ public class TelaPedagio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        lblTitulo = new javax.swing.JLabel();
+        lblNome = new javax.swing.JLabel();
+        txtDate = new javax.swing.JTextField();
+        btnSalvar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        cmbFunc = new javax.swing.JComboBox<>();
+        lblCpf = new javax.swing.JLabel();
+        txtVal = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        cmbMot = new javax.swing.JComboBox<>();
+        cmbVei = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        lblTitulo.setText("Cadastro de Pessoa:");
+
+        lblNome.setText("Data/Hora:");
+
+        btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Funcionário:");
+
+        cmbFunc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbFuncActionPerformed(evt);
+            }
+        });
+
+        lblCpf.setText("Valor:");
+
+        txtVal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtValActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Motorista: ");
+
+        cmbMot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbMotActionPerformed(evt);
+            }
+        });
+
+        cmbVei.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbVeiActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Veículo:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel1)
+                                        .addComponent(lblNome)
+                                        .addComponent(lblCpf))
+                                    .addGap(17, 17, 17)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(cmbMot, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtVal, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                                        .addComponent(cmbFunc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtDate)
+                                        .addComponent(cmbVei, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel4))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblTitulo)
+                        .addGap(44, 44, 44))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblNome)))
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCpf)
+                    .addComponent(txtVal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(cmbVei, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(cmbMot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbFunc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSalvar)
+                    .addComponent(btnCancelar))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        
+        dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        if(passagem == null){
+            passagem = new Passagem();
+        }
+        
+        passagem.setCabine(1);
+        passagem.setValorPago(Double.parseDouble(txtVal.getText()));
+        try {
+                passagem.setDataHora(LocalDateTime.parse(txtDate.getText()));
+            } catch (Exception e) {
+                
+                JOptionPane.showMessageDialog(this, "Data/hora inválida! Verifique o formato.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        passagem.setVeiculo((Veiculo) cmbVei.getSelectedItem());
+        passagem.setMotorista((Motorista) cmbMot.getSelectedItem());
+        passagem.setFuncionario((Funcionario) cmbFunc.getSelectedItem());
+        
+        jpa.conexaoAberta();
+        try {
+            jpa.persist(passagem);
+            System.out.println("Passagem cadastrada com sucesso");
+        } catch (Exception ex) {
+            Logger.getLogger(TelaFunc.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Erro ao persistir: "+passagem+" \n Erro: "+ex);
+        }
+        jpa.fecharConexao();
+        dispose();
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void cmbFuncActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFuncActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbFuncActionPerformed
+
+    private void txtValActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtValActionPerformed
+
+    private void cmbMotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbMotActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbMotActionPerformed
+
+    private void cmbVeiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbVeiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbVeiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -69,15 +254,84 @@ public class TelaPedagio extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TelaPedagio().setVisible(true);
+                TelaPedagio dialog = new TelaPedagio(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
 
+    private void carregarDados() {
+        jpa.conexaoAberta();
+
+        List<Veiculo> veiculos = jpa.getVeiculos();
+        for (Veiculo veiculo : veiculos) {
+            cmbVei.addItem(veiculo);
+        }
+
+        List<Motorista> motoristas = jpa.getMotoristas();
+        for (Motorista motorista : motoristas) {
+            cmbMot.addItem(motorista);
+        }
+
+        List<Funcionario> funcionarios = jpa.getFunc();
+        for (Funcionario funcionario : funcionarios) {
+            cmbFunc.addItem(funcionario);
+        }
+
+        jpa.fecharConexao();
+    }
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnSalvar;
+    private javax.swing.JComboBox<Funcionario> cmbFunc;
+    private javax.swing.JComboBox<Motorista> cmbMot;
+    private javax.swing.JComboBox<Veiculo> cmbVei;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel lblCpf;
+    private javax.swing.JLabel lblNome;
+    private javax.swing.JLabel lblTitulo;
+    private javax.swing.JTextField txtDate;
+    private javax.swing.JTextField txtVal;
     // End of variables declaration//GEN-END:variables
+
+    public Passagem getPassagem() {
+        return passagem;
+    }
+
+    public void setPassagem(Passagem passagem) {
+        this.passagem = passagem;
+//        txtDate.setText(passagem.getDataHora()); // tem q converter
+//        txtVal.setText(passagem.getValorPago()); // tem q converter
+        cmbVei.setSelectedItem(passagem.getVeiculo());
+        cmbMot.setSelectedItem(passagem.getMotorista());
+        cmbFunc.setSelectedItem(passagem.getFuncionario());
+    }
 }
