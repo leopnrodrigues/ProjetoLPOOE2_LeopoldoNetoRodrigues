@@ -166,6 +166,9 @@ public class TelaCadFunc extends javax.swing.JDialog {
                 .addContainerGap(9, Short.MAX_VALUE))
         );
 
+        javax.swing.SpinnerNumberModel modelSp = new javax.swing.SpinnerNumberModel(1, 1, 5, 1);
+        spinnerCabine.setModel(modelSp);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -184,6 +187,7 @@ public class TelaCadFunc extends javax.swing.JDialog {
         func.setEmail(txtEmail.getText());
         func.setCpf(txtCpf.getText());
         func.setTurno((Turno)cmbTurno.getSelectedItem());
+        func.setCabine((int) spinnerCabine.getValue()); 
         
         jpa.conexaoAberta();
         try {

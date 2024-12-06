@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
   </Properties>
@@ -181,6 +181,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="spinnerCabine">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="javax.swing.SpinnerNumberModel modelSp = new javax.swing.SpinnerNumberModel(1, 1, 5, 1);&#xa;spinnerCabine.setModel(modelSp);"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="lblCpf">
       <Properties>
