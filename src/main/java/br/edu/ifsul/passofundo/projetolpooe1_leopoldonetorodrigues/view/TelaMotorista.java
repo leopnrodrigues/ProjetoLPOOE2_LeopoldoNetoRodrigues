@@ -198,7 +198,7 @@ public class TelaMotorista extends javax.swing.JFrame {
                 }
 
                 jpa.fecharConexao();
-                //                carregarPessoasCadastradas();
+                carregarPessoasCadastradas();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this,
                     "Erro ao remover pessoa " + pessoaSel + "\n" + e);
@@ -212,9 +212,9 @@ public class TelaMotorista extends javax.swing.JFrame {
         Motorista pessoaSel = lstPessoas.getSelectedValue();
         if (pessoaSel != null) {
             TelaCadMotorista telaEdt = new TelaCadMotorista(this, rootPaneCheckingEnabled);
-                        telaEdt.setMot(pessoaSel);
+            telaEdt.setMot(pessoaSel);
             telaEdt.setVisible(true);
-                        carregarPessoasCadastradas();
+            carregarPessoasCadastradas();
 
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma pessoa para Editar");

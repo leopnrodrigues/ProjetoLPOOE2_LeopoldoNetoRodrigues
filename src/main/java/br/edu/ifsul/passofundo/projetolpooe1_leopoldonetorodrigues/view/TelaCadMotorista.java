@@ -163,7 +163,7 @@ public class TelaCadMotorista extends javax.swing.JDialog {
         
         mot.setNome(txtNome.getText());
         mot.setTelefone(txtFone.getText());
-        mot.setEmail(txtCNH.getText());
+        mot.setEmail(txtEmail.getText());
         mot.setCpf(txtCPF.getText());
         mot.setCnh(txtCNH.getText());
         
@@ -249,12 +249,12 @@ public class TelaCadMotorista extends javax.swing.JDialog {
         return mot;
     }
 
-    public void setMot(Motorista func) {
+    public void setMot(Motorista mot) {
         this.mot = mot;
-        txtNome.setText(func.getNome());
-        txtCPF.setText(func.getCpf());
-        txtEmail.setText(func.getEmail());
-        txtFone.setText(func.getTelefone());
-        txtCNH.setText(func.getCnh());
+        txtNome.setText(mot.getNome());
+        txtCPF.setText(mot.getCpf());
+        txtEmail.setText(mot.getEmail());
+        txtFone.setText(mot.getTelefone());
+        txtCNH.setText(mot.getCnh());
     }
 }
