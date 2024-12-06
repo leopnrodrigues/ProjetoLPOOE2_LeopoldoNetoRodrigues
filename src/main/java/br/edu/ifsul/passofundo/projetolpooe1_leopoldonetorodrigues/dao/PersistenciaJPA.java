@@ -4,7 +4,6 @@
  */
 package br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.dao;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,8 +17,7 @@ import model.Funcionario;
 import model.Marca;
 import model.Motorista;
 import model.Passagem;
-import model.Pessoa;
-import model.Tipo;
+
 import model.Turno;
 import model.Veiculo;
 
@@ -155,7 +153,7 @@ public class PersistenciaJPA implements InterfaceBD{
     public List<Motorista> getMotoristas(String nome) {
         entity = getEntityManager();
         try {
-            TypedQuery<Motorista> query = entity.createQuery("SELECT m FROM Motorista m WHERE m.nome LIKE :nome", Motorista.class);
+            TypedQuery<Motorista> query = entity.createQuery("SELECT m FROM Motorista m WHERE lower(m.nome) LIKE :nome", Motorista.class);
             query.setParameter("nome", "%" + nome + "%");
 
             return query.getResultList();
@@ -179,10 +177,10 @@ public class PersistenciaJPA implements InterfaceBD{
     }
 
     public List<Veiculo> getVeiculos(String placa) {
-        EntityManager em = getEntityManager();
+        entity = getEntityManager();
         try {
             TypedQuery<Veiculo> query
-                    = em.createQuery("SELECT v FROM Veiculo v where lower(v.placa) LIKE :p", Veiculo.class);
+                    = entity.createQuery("SELECT v FROM Veiculo v where lower(v.placa) LIKE :p", Veiculo.class);
             query.setParameter("p", "%" + placa.toLowerCase() + "%");
             return query.getResultList();
         } catch (Exception e) {
@@ -191,11 +189,6 @@ public class PersistenciaJPA implements InterfaceBD{
         }
     }
     
-    public List<Veiculo> getVeiculosByPlaca(String placa) {
-        return entity.createQuery("SELECT v FROM Veiculo v WHERE v.placa LIKE :placa", Veiculo.class)
-                 .setParameter("placa", "%" + placa + "%")
-                 .getResultList();
-    }
 
     public List<Marca> getModelos() {
         entity = getEntityManager();
@@ -245,5 +238,24 @@ public class PersistenciaJPA implements InterfaceBD{
 
     }
     
-   
+    public Passagem findPassagemByDetails(String motoristaNome, String veiculoPlaca, LocalDateTime dataHora) {
+        entity = getEntityManager();
+        try {
+            TypedQuery<Passagem> query = entity.createQuery(
+                "SELECT p FROM Passagem p WHERE p.motorista.nome = :motoristaNome " +
+                "AND p.veiculo.placa = :veiculoPlaca AND p.dataHora = :dataHora", Passagem.class
+            );
+            query.setParameter("motoristaNome", motoristaNome);
+            query.setParameter("veiculoPlaca", veiculoPlaca);
+            query.setParameter("dataHora", dataHora);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            System.err.println("Nenhuma passagem encontrada para os dados fornecidos.");
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar passagem: " + e.getMessage());
+        }
+    }
+
 }

@@ -297,9 +297,21 @@ public class MainJFrame extends javax.swing.JFrame {
     }
     
     private Passagem getPassagemSelecionada() {
-        int linhaSelecionada = jTable1.getSelectedRow(); 
+        int linhaSelecionada = jTable1.getSelectedRow();
+        if (linhaSelecionada >= 0) {
+            
+            String motoristaNome = (String) jTable1.getValueAt(linhaSelecionada, 0);
+            String veiculoPlaca = (String) jTable1.getValueAt(linhaSelecionada, 1);
+            LocalDateTime dataHora = LocalDateTime.parse((String) jTable1.getValueAt(linhaSelecionada, 2));
 
-            //TODO
+            try {
+            
+                return jpa.findPassagemByDetails(motoristaNome, veiculoPlaca, dataHora);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erro ao buscar passagem selecionada: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 
