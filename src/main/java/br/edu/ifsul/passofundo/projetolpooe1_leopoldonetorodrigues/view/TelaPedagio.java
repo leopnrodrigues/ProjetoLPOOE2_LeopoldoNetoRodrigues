@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import model.Funcionario;
 import model.Motorista;
 import model.Passagem;
-import model.Turno;
+import java.time.format.DateTimeFormatter;
 import model.Veiculo;
 
 public class TelaPedagio extends javax.swing.JDialog {
@@ -21,6 +21,7 @@ public class TelaPedagio extends javax.swing.JDialog {
     private Passagem passagem;
     PersistenciaJPA jpa;
     
+    private static DateTimeFormatter Formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     /**
      * Creates new form TelaCadastroPessoa
      */
@@ -29,7 +30,7 @@ public class TelaPedagio extends javax.swing.JDialog {
         initComponents();
         jpa = new PersistenciaJPA();
         carregarDados();
-        txtDate.setText(LocalDateTime.now().toString());
+        txtDate.setText(LocalDateTime.now().format(Formatter));
     }
 
     /**
@@ -194,7 +195,7 @@ public class TelaPedagio extends javax.swing.JDialog {
             return;
         }
         try {
-                passagem.setDataHora(LocalDateTime.parse(txtDate.getText()));
+                passagem.setDataHora(LocalDateTime.parse(txtDate.getText(), Formatter));
             } catch (Exception e) {
                 
                 JOptionPane.showMessageDialog(this, "Data/hora inválida! Verifique o formato.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -330,10 +331,10 @@ public class TelaPedagio extends javax.swing.JDialog {
     public Passagem getPassagem() {
         return passagem;
     }
-
+    
     public void setPassagem(Passagem passagem) {
         this.passagem = passagem;
-//        txtDate.setText(passagem.getDataHora()); // tem q converter
+        txtDate.setText(passagem.getDataHora().format(Formatter));        
         txtVal.setText(String.valueOf(passagem.getValorPago()));
         cmbVei.setSelectedItem(passagem.getVeiculo());
         cmbMot.setSelectedItem(passagem.getMotorista());
