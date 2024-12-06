@@ -186,7 +186,7 @@ public class TelaPedagio extends javax.swing.JDialog {
             passagem = new Passagem();
         }
         
-        passagem.setCabine(1);
+        passagem.setCabine(((Funcionario) cmbFunc.getSelectedItem()).getCabine());
         passagem.setValorPago(Double.parseDouble(txtVal.getText()));
         try {
                 passagem.setDataHora(LocalDateTime.parse(txtDate.getText()));
