@@ -59,13 +59,13 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Motorista", "Veículo", "Data"
+                "Motorista", "Veículo", "Data", "Funcionário", "Valor"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -147,7 +147,7 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 888, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -182,6 +182,12 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void MenuPedagioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuPedagioActionPerformed
         TelaPedagio telaPedagio = new TelaPedagio(this, rootPaneCheckingEnabled);
+        telaPedagio.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                carregarHistorico();
+            }
+        });
         telaPedagio.setVisible(true);
     }//GEN-LAST:event_MenuPedagioActionPerformed
 
@@ -282,14 +288,16 @@ public class MainJFrame extends javax.swing.JFrame {
         
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{}, 
-            new String[]{"Motorista", "Veículo", "Data"} 
+            new String[]{"Motorista", "Veículo", "Data", "Funcionário", "Valor"} 
         );
         
         for (Passagem passagem : movimentacoes) {
-            Object[] row = new Object[3];
+            Object[] row = new Object[5];
             row[0] = passagem.getMotorista().getNome();
             row[1] = passagem.getVeiculo().getPlaca(); 
             row[2] = passagem.getDataHora().toString(); 
+            row[3] = passagem.getFuncionario().toString(); 
+            row[4] = passagem.getValorPago(); 
             model.addRow(row); 
         }
 

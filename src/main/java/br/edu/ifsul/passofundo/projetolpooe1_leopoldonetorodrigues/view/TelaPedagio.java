@@ -329,7 +329,7 @@ public class TelaPedagio extends javax.swing.JDialog {
     public void setPassagem(Passagem passagem) {
         this.passagem = passagem;
 //        txtDate.setText(passagem.getDataHora()); // tem q converter
-//        txtVal.setText(passagem.getValorPago()); // tem q converter
+        txtVal.setText(String.valueOf(passagem.getValorPago()));
         cmbVei.setSelectedItem(passagem.getVeiculo());
         cmbMot.setSelectedItem(passagem.getMotorista());
         cmbFunc.setSelectedItem(passagem.getFuncionario());
