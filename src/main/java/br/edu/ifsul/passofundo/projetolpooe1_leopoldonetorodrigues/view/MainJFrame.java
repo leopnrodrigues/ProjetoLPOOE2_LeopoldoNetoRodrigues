@@ -5,7 +5,9 @@
 package br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.view;
 
 import br.edu.ifsul.passofundo.projetolpooe1_leopoldonetorodrigues.dao.PersistenciaJPA;
+import java.time.LocalDateTime;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Passagem;
 
@@ -15,11 +17,14 @@ import model.Passagem;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
+    PersistenciaJPA jpa;
+    
     /**
      * Creates new form MainJFrame
      */
     public MainJFrame() {
         initComponents();
+        jpa = new PersistenciaJPA();
         carregarHistorico();
     }
 
@@ -36,6 +41,8 @@ public class MainJFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
+        btnExc = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         MenuCad = new javax.swing.JMenu();
         ItemFunc = new javax.swing.JMenuItem();
@@ -64,6 +71,20 @@ public class MainJFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jLabel1.setText("Histórico");
+
+        btnExc.setText("Excluir");
+        btnExc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setText("Editar");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         MenuCad.setText("Cadastros");
 
@@ -129,7 +150,12 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnEdit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnExc)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -139,7 +165,11 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnExc)
+                    .addComponent(btnEdit))
+                .addContainerGap())
         );
 
         pack();
@@ -169,6 +199,47 @@ public class MainJFrame extends javax.swing.JFrame {
         TelaVei telaVei = new TelaVei();
         telaVei.setVisible(true);
     }//GEN-LAST:event_ItemVeiActionPerformed
+
+    private void btnExcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcActionPerformed
+        Passagem passagemSel = getPassagemSelecionada();  // Obter a passagem selecionada
+        if (passagemSel != null) { 
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Tem certeza que deseja remover a passagem com ID " + passagemSel.getId() + "?",
+                "Confirmar Remoção",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {  // Se o usuário confirmou a remoção
+                try {
+                    jpa.conexaoAberta();  // Abre a conexão com o banco de dados
+                    jpa.remover(passagemSel);  // Remove a passagem do banco
+                    jpa.fecharConexao();  // Fecha a conexão
+                    JOptionPane.showMessageDialog(this, "Passagem removida com sucesso!");
+                    carregarHistorico();  // Atualiza a tabela após remoção
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Erro ao remover passagem: " + e.getMessage());
+                    e.printStackTrace();
+                } finally {
+                    jpa.fecharConexao();  // Garante que a conexão seja fechada
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma passagem para remover.");
+        }
+    }//GEN-LAST:event_btnExcActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        Passagem passagemSel = getPassagemSelecionada(); 
+        if (passagemSel != null) {
+            TelaPedagio tela = new TelaPedagio(this, rootPaneCheckingEnabled); 
+            tela.setPassagem(passagemSel);
+            tela.setVisible(true);
+            carregarHistorico();
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma passagem para editar.");
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
 
     /**
      * @param args the command line arguments
@@ -206,27 +277,33 @@ public class MainJFrame extends javax.swing.JFrame {
     }
     
     public void carregarHistorico() {
-        PersistenciaJPA jpa = new PersistenciaJPA(); // Criação da instância do JPA
-        List<Passagem> movimentacoes = jpa.getMovimentacoes(); // Recupera as passagens do banco de dados
+        List<Passagem> movimentacoes = jpa.getMovimentacoes(); 
 
-        // Cria o modelo da tabela com as colunas apropriadas
+        
         DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{}, // Inicializa a tabela sem dados
-            new String[]{"Motorista", "Veículo", "Data"} // Definição das colunas
+            new Object[][]{}, 
+            new String[]{"Motorista", "Veículo", "Data"} 
         );
-
-        // Preenche a tabela com os dados das passagens
+        
         for (Passagem passagem : movimentacoes) {
             Object[] row = new Object[3];
-            row[0] = passagem.getMotorista().getNome(); // Nome do motorista
-            row[1] = passagem.getVeiculo().getPlaca(); // Modelo do veículo
-            row[2] = passagem.getDataHora().toString(); // Data e hora da passagem
-            model.addRow(row); // Adiciona a linha na tabela
+            row[0] = passagem.getMotorista().getNome();
+            row[1] = passagem.getVeiculo().getPlaca(); 
+            row[2] = passagem.getDataHora().toString(); 
+            model.addRow(row); 
         }
 
-        // Define o modelo para a tabela
         jTable1.setModel(model);
     }
+    
+    private Passagem getPassagemSelecionada() {
+        int linhaSelecionada = jTable1.getSelectedRow(); 
+
+            //TODO
+        return null;
+    }
+
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem ItemFunc;
@@ -235,6 +312,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenu MenuCad;
     private javax.swing.JMenuItem MenuPedagio;
     private javax.swing.JMenuItem MenuSobre;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnExc;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
