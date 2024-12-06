@@ -187,7 +187,12 @@ public class TelaPedagio extends javax.swing.JDialog {
         }
         
         passagem.setCabine(((Funcionario) cmbFunc.getSelectedItem()).getCabine());
-        passagem.setValorPago(Double.parseDouble(txtVal.getText()));
+        try {
+            passagem.setValorPago(Double.parseDouble(txtVal.getText()));
+        }  catch (Exception e){
+            JOptionPane.showMessageDialog(this, "Verifique se o valor está preenchido e separado por pontos.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         try {
                 passagem.setDataHora(LocalDateTime.parse(txtDate.getText()));
             } catch (Exception e) {

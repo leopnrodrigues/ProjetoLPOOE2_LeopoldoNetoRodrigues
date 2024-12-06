@@ -50,7 +50,7 @@ public class TelaVei extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtPlaca = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnAddVeiculo.setText("Novo");
         btnAddVeiculo.addActionListener(new java.awt.event.ActionListener() {
