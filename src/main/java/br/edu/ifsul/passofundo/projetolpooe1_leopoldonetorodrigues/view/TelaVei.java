@@ -206,7 +206,7 @@ public class TelaVei extends javax.swing.JFrame {
         String texto = txtPlaca.getText().toLowerCase();
         if (!texto.isEmpty()) {  
             try {
-                List<Veiculo> resultados = jpa.getVeiculosByPlaca(texto);
+                List<Veiculo> resultados = jpa.getVeiculos(texto);
                 DefaultTableModel model = (DefaultTableModel) tblVeiculos.getModel();  
                 model.setRowCount(0);  
 
@@ -271,6 +271,7 @@ public class TelaVei extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TelaVei().setVisible(true);
+                
             }
         });
     }
