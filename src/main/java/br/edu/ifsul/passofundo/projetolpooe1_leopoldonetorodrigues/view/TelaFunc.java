@@ -53,7 +53,7 @@ public class TelaFunc extends javax.swing.JFrame {
         lblBuscaVinculo = new javax.swing.JLabel();
         txtBuscaNome = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Funcionários");
 

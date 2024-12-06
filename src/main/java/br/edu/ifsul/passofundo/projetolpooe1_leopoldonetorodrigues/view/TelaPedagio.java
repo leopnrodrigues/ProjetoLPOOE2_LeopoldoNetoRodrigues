@@ -57,7 +57,7 @@ public class TelaPedagio extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        lblTitulo.setText("Cadastro de Pessoa:");
+        lblTitulo.setText("Cadastro do pedágio:");
 
         lblNome.setText("Data/Hora:");
 
